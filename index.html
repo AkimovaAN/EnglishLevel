@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>EnglishLevel</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        p.subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #34495e; }
+        select { width: 100%; padding: 12px; font-size: 15px; border: 1px solid #bdc3c7; border-radius: 6px; cursor: pointer; }
+        button { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        button:hover { background: #2980b9; }
+        
+        #result { margin-top: 30px; display: none; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .badge-container { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #eee; }
+        .badge { display: inline-block; padding: 12px 30px; color: white; font-size: 28px; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .score-text { margin-top: 10px; font-size: 1.1em; color: #555; }
+        
+        /* Стили для карточек рекомендаций */
+        .rec-card { background: #fff; border-left: 5px solid #3498db; padding: 15px 20px; margin-bottom: 15px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .rec-card h4 { margin: 0 0 8px 0; color: #2c3e50; font-size: 1.1em; text-transform: uppercase; letter-spacing: 1px; }
+        .rec-card p { margin: 0; color: #555; line-height: 1.5; }
+        
+        /* Цвета для разных типов рекомендаций */
+        .card-grammar { border-left-color: #e74c3c; } /* Красный для грамматики */
+        .card-vocab { border-left-color: #f1c40f; }   /* Желтый для слов */
+        .card-listen { border-left-color: #2ecc71; }  /* Зеленый для аудирования */
+
+        h3 { color: #2c3e50; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-top: 25px; }
+        .rules-log { font-size: 0.9em; color: #666; margin-top: 15px; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #eee; }
+        .rule-item { border-bottom: 1px dashed #ddd; padding: 8px 0; display: flex; justify-content: space-between; }
+        .weight-val { font-weight: bold; color: #3498db; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>EnglishLevel</h1>
+    <p class="subtitle">Оцените свои навыки, выбрав наиболее подходящее описание</p>
+    
+    <!-- Grammar Section -->
+    <div class="input-group">
+        <label>Grammar (Знание грамматики):</label>
+        <select id="grammar">
+            <option value="0">0 - Полное отсутствие знаний</option>
+            <option value="1">1 - Знаю только "Hello"</option>
+            <option value="2">2 - Могу представиться очень просто</option>
+            <option value="3">3 - Знаю базовые фразы для выживания</option>
+            <option value="4">4 - Понимаю простые конструкции, но путаюсь</option>
+            <option value="5" selected>5 - Средняя школьная база (Present/Past Simple)</option>
+            <option value="6">6 - Знаю большинство времен, но делаю ошибки</option>
+            <option value="7">7 - Грамматика хорошая, говорю достаточно правильно</option>
+            <option value="8">8 - Уверенное владение сложными конструкциями</option>
+            <option value="9">9 - Почти без ошибок, как носитель</option>
+            <option value="10">10 - Идеальное знание всех нюансов языка</option>
+        </select>
+    </div>
+
+    <!-- Vocabulary Section -->
+    <div class="input-group">
+        <label>Vocabulary (Словарный запас):</label>
+        <select id="vocab">
+            <option value="0">0 - Не знаю ни одного слова</option>
+            <option value="1">1 - Знаю 10-20 слов</option>
+            <option value="2">2 - Могу назвать цвета, цифры, семью</option>
+            <option value="3">3 - Базовый набор для простых бытовых тем</option>
+            <option value="4">4 - Понимаю общий смысл простых текстов</option>
+            <option value="5" selected>5 - Средний запас (около 2000 слов)</option>
+            <option value="6">6 - Могу объяснить мысль, если не хватает точного слова</option>
+            <option value="7">7 - Хороший запас, понимаю фильмы с субтитрами</option>
+            <option value="8">8 - Продвинутый, понимаю сленг и идиомы</option>
+            <option value="9">9 - Очень богатый словарный запас</option>
+            <option value="10">10 - Знаю редкие слова и профессиональную терминологию</option>
+        </select>
+    </div>
+
+    <!-- Listening Section -->
+    <div class="input-group">
+        <label>Listening (Понимание на слух / Сериалы):</label>
+        <select id="listen">
+            <option value="0">0 - Абсолютно ничего не понимаю</option>
+            <option value="1">1 - Узнаю только отдельные знакомые слова</option>
+            <option value="2">2 - Понимаю очень медленную, четкую речь</option>
+            <option value="3">3 - Ловлю обрывки фраз в простых диалогах</option>
+            <option value="4">4 - Понимаю суть, если говорят медленно и просто</option>
+            <option value="5" selected>5 - Понимаю медленно, с паузами и повторами</option>
+            <option value="6">6 - Понимаю основную мысль сериалов с субтитрами</option>
+            <option value="7">7 - Понимаю разговорную речь, иногда переспрашиваю</option>
+            <option value="8">8 - Понимаю быстрые диалоги и юмор</option>
+            <option value="9">9 - Понимаю почти всё, включая акценты</option>
+            <option value="10">10 - Понимаю всё на 100%, как родной язык</option>
+        </select>
+    </div>
+
+    <button onclick="sendData()">Рассчитать уровень</button>
+
+    <div id="result">
+        <div class="badge-container">
+            <div id="badge" class="badge">B1</div>
+            <div class="score-text">Индекс уровня (0-6): <strong id="score">0.0</strong></div>
+        </div>
+        
+        <h3>📚 Ваш план развития:</h3>
+        <div id="rec-container">
+            <!-- Сюда JavaScript вставит карточки -->
+        </div>
+        
+        <h3>⚙️ Логика системы (Активированные правила):</h3>
+        <div id="log" class="rules-log"></div>
+    </div>
+</div>
+
+<script>
+    async function sendData() {
+        const grammar = parseInt(document.getElementById('grammar').value);
+        const vocab = parseInt(document.getElementById('vocab').value);
+        const listen = parseInt(document.getElementById('listen').value);
+
+        try {
+            const response = await fetch('http://localhost:8080', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ grammar, vocab, listen })
+            });
+
+            const data = await response.json();
+
+            document.getElementById('result').style.display = 'block';
+            const badge = document.getElementById('badge');
+            badge.textContent = data.level;
+            badge.style.backgroundColor = data.color;
+            
+            document.getElementById('score').textContent = data.score;
+
+            // --- РАЗБИВАЕМ РЕКОМЕНДАЦИИ НА КАРТОЧКИ ---
+            const recContainer = document.getElementById('rec-container');
+            recContainer.innerHTML = ''; // Очищаем старое
+
+            // Разделяем текст по двойному переносу строки (\n\n), который мы сделали в Python
+            const parts = data.recommendation.split('\n\n');
+            
+            parts.forEach(part => {
+                if (!part.trim()) return; // Пропускаем пустые
+
+                let title = "";
+                let cssClass = "";
+                let content = part;
+
+                // Определяем тип рекомендации по первым словам
+                if (part.startsWith("ГРАММАТИКА")) {
+                    title = "Грамматика";
+                    cssClass = "card-grammar";
+                    content = part.replace("ГРАММАТИКА: ", "");
+                } else if (part.startsWith("СЛОВАРЬ")) {
+                    title = "Словарный запас";
+                    cssClass = "card-vocab";
+                    content = part.replace("СЛОВАРЬ: ", "");
+                } else if (part.startsWith("АУДИРОВАНИЕ")) {
+                    title = "Аудирование";
+                    cssClass = "card-listen";
+                    content = part.replace("АУДИРОВАНИЕ: ", "");
+                }
+
+                // Создаем HTML для карточки
+                const cardHtml = `
+                    <div class="rec-card ${cssClass}">
+                        <h4>${title}</h4>
+                        <p>${content}</p>
+                    </div>
+                `;
+                recContainer.innerHTML += cardHtml;
+            });
+
+            // --- ЛОГИКА ПРАВИЛ ---
+            let logHtml = "";
+            if (data.rules.length === 0) {
+                logHtml += "<div class='rule-item'>Нет активных правил</div>";
+            } else {
+                data.rules.forEach(r => {
+                    logHtml += `<div class="rule-item"><span>🔹 ${r.name}</span> <span class="weight-val">Вес: ${r.weight.toFixed(2)}</span></div>`;
+                });
+            }
+            document.getElementById('log').innerHTML = logHtml;
+            
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+
+        } catch (error) {
+            alert("Ошибка соединения с сервером. Убедитесь, что server.py запущен!");
+            console.error(error);
+        }
+    }
+</script>
+
+</body>
+</html>
